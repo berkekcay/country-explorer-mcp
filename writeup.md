@@ -15,9 +15,36 @@ The starter didn't run as given, for two reasons:
 - `requirements.txt` had an unpinned `mcp`. A fresh install pulls 2.x, where `FastMCP` was
   renamed to `MCPServer` and the import fails. I pinned `mcp==1.30.0` and `httpx==0.28.1`.
 
+## Registered in Claude Desktop
+
+I added the server to `claude_desktop_config.json` (the `mcpServers` block from the README,
+pointing at the project's venv Python and `server.py`; the key stays in `.env`) and restarted
+Claude Desktop. Its tools then showed up as `mcp__data-explorer__search_countries` and
+`mcp__data-explorer__get_country_details`, and Claude called them like this (results shortened):
+
+```text
+search_countries(query="stan", limit=5)
+-> {"query": "stan", "count": 5, "results": [Afghanistan (Kabul), Armenia (Yerevan),
+    Kazakhstan (Astana), Kyrgyzstan (Bishkek), Pakistan (Islamabad)]}
+
+get_country_details(name="Turkey")
+-> {"name": "Turkey", "capital": "Ankara",
+    "currencies": [{"code": "TRY", "name": "Turkish lira", "symbol": "₺"}],
+    "languages": [{"code": "tr", "name": "Turkish", "native_name": "Türkçe"}],
+    "borders": [Armenia, Azerbaijan, Bulgaria, Georgia, Greece, Iran, Iraq, Syria],
+    "flag": {"emoji": "🇹🇷", "png": "https://flags.restcountries.com/v5/w640/tr.png", ...}}
+
+get_country_details(name="Guine")
+-> {"error": {"code": "ambiguous", "message": "'Guine' matches 4 countries; ask which one is meant",
+    "candidates": ["Equatorial Guinea", "Guinea", "Guinea-Bissau", "Papua New Guinea"]}}
+
+search_countries(query="  ")
+-> {"error": {"code": "invalid_input", "message": "query must not be empty"}}
+```
+
 ## Agent transcripts
 
-I drove the server with `agent_demo.py`. It starts `server.py` over STDIO with the official MCP
+I also drove the server with `agent_demo.py`. It starts `server.py` over STDIO with the official MCP
 Python client, gives the server's tool list to a local model (gpt-oss:20b on Ollama) and runs
 whatever tool calls the model makes. The tool results below are shortened.
 
@@ -56,7 +83,7 @@ Greece, Iran, Iraq and Syria. Currency: Turkish lira (TRY). Official language: T
 I didn't plan the timeout. The API was slow once, the tool returned a structured `timeout`
 error instead of crashing, and the model read "try again" and called the tool a second time.
 
-**A misspelled name**
+**A misspelled name (agent_demo.py)**
 
 ```text
 [user] What is the currency of Guine?
