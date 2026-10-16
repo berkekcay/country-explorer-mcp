@@ -42,6 +42,12 @@ search_countries(query="  ")
 -> {"error": {"code": "invalid_input", "message": "query must not be empty"}}
 ```
 
+The four calls as Claude Desktop shows them, and the first one opened:
+
+![Claude Desktop listing the data-explorer tool calls](docs/claude-desktop-tool-calls.png)
+
+![search_countries called from Claude Desktop with query "stan" and its result](docs/claude-desktop-search-result.png)
+
 ## Agent transcripts
 
 I also drove the server with `agent_demo.py`. It starts `server.py` over STDIO with the official MCP
