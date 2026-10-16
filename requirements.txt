@@ -1,2 +1,3 @@
-mcp
-httpx
+# mcp 2.x renamed FastMCP to MCPServer; this server targets the 1.x API.
+mcp==1.30.0
+httpx==0.28.1
